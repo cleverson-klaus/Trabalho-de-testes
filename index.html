@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>VISIOCAM - Câmeras de Segurança Premium</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>/* seu CSS existente aqui */</style>
+</head>
+<body class="bg-blue-950 font-sans">
+<header class="bg-blue-900 text-white fixed w-full z-50">
+  <div class="container mx-auto px-4 py-2 flex items-center justify-between">
+    <div class="flex items-center space-x-4">
+      <img src="imagens/f99dc221-0fb9-4d82-a03c-a72485b5c432.png" alt="VISIOCAM Logo" class="h-32">
+      <h1 class="text-4xl font-bold">VISIOCAM</h1>
+    </div>
+  </div>
+</header>
+
+<section id="home" class="pt-40 pb-24 bg-gradient-to-r from-blue-900 to-indigo-700 text-white relative">
+  <div class="container mx-auto px-8 md:px-20 lg:px-32 md:flex items-center">
+    <div class="md:w-1/2">
+      <h1 class="text-5xl font-bold mb-8 leading-tight">Segurança Inteligente para seu Lar</h1>
+      <p class="text-xl mb-8">Proteção avançada com as melhores câmeras do mercado</p>
+    </div>
+    <div class="md:w-1/2">
+
+    </div>
+  </div>
+</section>
+
+<!-- Seção produtos destaca UNV -->
+<section id="unv-models" class="py-12 bg-gray-200">
+  <div class="container mx-auto px-4">
+    <h2 class="text-2xl font-bold text-center mb-8">Modelos UNV e preços de mercado</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="bg-white rounded-lg shadowp-4">
+        <img src="imagens/OIP.jfif" alt="Câmera Dome PTZ UNV" class="w-full h-48 object-contain"/>
+        <h3 class="font-semibold mt-2">Câmera Dome PTZ UNV</h3>
+        <p>UNV PTZ 4MP com zoom motorizado: R$ 15,98 </p>
+      </div>
+      <div class="bg-white rounded-lg shadowp-4">
+        <img src="imagens/IPC6312LFW-AX5C-VG1.webp" alt="Câmera Bullet UNV" class="w-full h-48 object-contain"/>
+        <h3 class="font-semibold mt-2">Câmera Bullet UNV</h3>
+        <p>Bullet 2 MP IP67: R$ 25,99 </p>
+      </div>
+      <div class="bg-white rounded-lg shadowp-4">
+        <img src="imagens/unv-cctv-500x500 (1).webp" alt="Câmera Turret UNV" class="w-full h-48 object-contain"/>
+        <h3 class="font-semibold mt-2">Câmera Turret UNV</h3>
+        <p>Turret 4 MP ValorR$32,68</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const numCamerasInput = document.getElementById('numCameras');
+  const estimatedValueDisplay = document.getElementById('estimatedValue');
+  const pricePerCamera = 25.99;
+
+  function calculateEstimatedValue() {
+    const numCameras = parseInt(numCamerasInput.value);
+    if (isNaN(numCameras) || numCameras < 1) {
+      estimatedValueDisplay.innerText = 'R$ 0,00';
+      return;
+    }
+    const totalValue = numCameras * pricePerCamera;
+    estimatedValueDisplay.innerText = `R$ ${totalValue.toFixed(2).replace('.', ',')}`;
+  }
+
+  numCamerasInput.addEventListener('input', calculateEstimatedValue);
+
+  // Calcular valor inicial ao carregar a página
+  calculateEstimatedValue();
+
+  // Script para mostrar/esconder formas de pagamento
+  const togglePaymentMethodsButton = document.getElementById('togglePaymentMethods');
+  const paymentMethodsContent = document.getElementById('paymentMethodsContent');
+
+  togglePaymentMethodsButton.addEventListener('click', () => {
+    paymentMethodsContent.classList.toggle('hidden');
+    if (paymentMethodsContent.classList.contains('hidden')) {
+      togglePaymentMethodsButton.innerText = 'Ver Formas de Pagamento';
+    } else {
+      togglePaymentMethodsButton.innerText = 'Esconder Formas de Pagamento';
+    }
+  });
+
+  // Script para Calculadora de Armazenamento
+  const calcNumCamerasInput = document.getElementById('calcNumCameras');
+  const calcResolutionSelect = document.getElementById('calcResolution');
+  const calcRecordingTypeSelect = document.getElementById('calcRecordingType');
+  const calcStorageSizeInput = document.getElementById('calcStorageSize');
+  const estimatedRecordingDaysDisplay = document.getElementById('estimatedRecordingDays');
+
+  // Taxas de bits estimadas em Mbps (megabits por segundo)
+  // Estas são estimativas e podem variar dependendo da compressão (H.264, H.265 etc.) e da qualidade da câmera.
+  const estimatedBitratesMbps = {
+    '720p': 2,
+    '1080p': 4,
+    '4k': 8,
+  };
+
+  // Fator de gravação por movimento (ex: 50% do tempo de gravação contínua)
+  const motionRecordingFactor = 0.5;
+
+  function calculateRecordingDays() {
+    const numCameras = parseInt(calcNumCamerasInput.value) || 0;
+    const resolution = calcResolutionSelect.value;
+    const recordingType = calcRecordingTypeSelect.value;
+    const storageSizeGB = parseInt(calcStorageSizeInput.value) || 0;
+
+    if (numCameras === 0 || storageSizeGB === 0) {
+      estimatedRecordingDaysDisplay.innerText = '0 dias';
+      return;
+    }
+
+    const bitrateMbps = estimatedBitratesMbps[resolution];
+    if (!bitrateMbps) {
+      estimatedRecordingDaysDisplay.innerText = '0 dias';
+      return;
+    }
+
+    // Converter armazenamento para megabits (1 GB = 8000 Megabits)
+    const storageSizeMegabits = storageSizeGB * 8000;
+
+    // Cálculo da taxa de bits total por dia (para gravação contínua)
+    // (bitrate Mbps * 60 segundos/min * 60 min/hora * 24 horas/dia)
+    const totalBitratePerDayMbps = bitrateMbps * 60 * 60 * 24;
+
+    let adjustedTotalBitratePerDayMbps = totalBitratePerDayMbps * numCameras;
+
+    if (recordingType === 'motion') {
+      adjustedTotalBitratePerDayMbps *= motionRecordingFactor;
+    }
+
+    // Calcular dias de gravação
+    const days = storageSizeMegabits / adjustedTotalBitratePerDayMbps;
+
+    estimatedRecordingDaysDisplay.innerText = `${Math.floor(days)} dias`;
+  }
+
+  calcNumCamerasInput.addEventListener('input', calculateRecordingDays);
+  calcResolutionSelect.addEventListener('change', calculateRecordingDays);
+  calcRecordingTypeSelect.addEventListener('change', calculateRecordingDays);
+  calcStorageSizeInput.addEventListener('input', calculateRecordingDays);
+
+  // Calcular valor inicial ao carregar a página
+  calculateRecordingDays();
+
+  // Script para pesquisa de CEP (movido para cá)
+  const cepInput = document.getElementById('cep');
+  const consultaCepButton = document.getElementById('consultaCep');
+  const resultadoCepDiv = document.getElementById('resultadoCep');
+
+  if (consultaCepButton) {
+    consultaCepButton.addEventListener('click', () => {
+      const cep = cepInput.value.replace(/\D/g, '');
+      if (!cep.match(/^[0-9]{8}$/)) {
+        resultadoCepDiv.innerText = "CEP inválido";
+        return;
+      }
+      fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.erro) {
+            resultadoCepDiv.innerText = "CEP não encontrado";
+            return;
+          }
+          resultadoCepDiv.innerHTML = `Endereço: ${data.logradouro}, ${data.bairro} - ${data.localidade}/${data.uf}`;
+        })
+        .catch(() => {
+          resultadoCepDiv.innerText = "Erro ao consultar CEP";
+        });
+    });
+  }
+});
+</script>
+
+<!-- Seção de Orçamento -->
+<section id="quote" class="py-16 bg-blue-900 text-white">
+  <div class="container mx-auto px-4 text-center">
+    <h2 class="text-3xl font-bold mb-8">Solicite seu Orçamento Personalizado</h2>
+    <p class="text-lg mb-8 max-w-2xl mx-auto">Escolha a quantidade de câmeras e veja uma estimativa de investimento. Oferecemos flexibilidade nas formas de pagamento para sua conveniência.</p>
+
+    <div class="bg-white text-gray-800 p-8 rounded-lg shadow-xl max-w-xl mx-auto">
+      <h3 class="text-2xl font-bold mb-6">Cálculo Rápido</h3>
+      <div class="mb-6">
+        <label for="numCameras" class="block text-lg font-semibold mb-2">Quantas câmeras você precisa?</label>
+        <input type="number" id="numCameras" min="1" value="1" class="w-full p-3 rounded-lg border border-gray-300 text-center text-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+      <div class="mb-8">
+        <p class="text-xl font-bold">Valor Estimado:</p>
+        <p id="estimatedValue" class="text-4xl text-blue-600 font-extrabold">R$ 300,00</p>
+        <p class="text-sm text-gray-500 mt-2">*Este é um valor estimado por câmera. O orçamento final será confirmado por nossa equipe.</p>
+      </div>
+
+      <h3 class="text-2xl font-bold mb-4">Formas de Pagamento</h3>
+      <button id="togglePaymentMethods" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition duration-300 mb-4">Ver Formas de Pagamento</button>
+      <div id="paymentMethodsContent" class="hidden">
+        <div class="flex flex-wrap justify-center gap-4 text-3xl mb-6">
+          <i class="fab fa-cc-visa text-blue-700" title="Visa"></i>
+          <i class="fab fa-cc-mastercard text-red-600" title="Mastercard"></i>
+          <i class="fab fa-cc-amex text-green-700" title="American Express"></i>
+          <i class="fab fa-cc-paypal text-blue-800" title="PayPal"></i>
+          <i class="fas fa-money-bill-wave text-yellow-600" title="Boleto Bancário"></i>
+          <i class="fas fa-qrcode text-purple-700" title="Pix"></i>
+        </div>
+        <p class="text-md text-gray-600">Aceitamos as principais bandeiras de cartões de crédito e débito, Pix e boleto bancário.</p>
+      </div>
+
+      <hr class="my-8 border-gray-200">
+      <h3 class="text-2xl font-bold mb-4">Verifique a Cobertura na sua Região</h3>
+      <div class="mb-4">
+        <label for="cep" class="sr-only">Digite seu CEP</label>
+        <div class="flex">
+          <input id="cep" type="text" placeholder="Digite seu CEP" class="flex-grow px-4 py-3 rounded-l-lg border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <button id="consultaCep" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-r-lg transition duration-300">Consultar</button>
+        </div>
+        <div id="resultadoCep" class="mt-2 text-gray-700 text-left"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Seção de Comparação de Câmeras -->
+<section id="camera-comparison" class="py-16 bg-white">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Compare Nossas Câmeras</h2>
+    
+    <div class="max-w-4xl mx-auto bg-gray-100 p-8 rounded-lg shadow-md">
+      <p class="text-center text-lg mb-6 text-gray-700">Selecione até 3 câmeras para comparar suas características:</p>
+      
+      <div class="flex flex-wrap justify-center gap-4 mb-8" id="cameraSelection">
+        <!-- Checkboxes para seleção de câmeras serão inseridos aqui via JS -->
+      </div>
+
+      <div id="comparisonTableContainer" class="overflow-x-auto">
+        <!-- Tabela de comparação será inserida aqui via JS -->
+      </div>
+      
+      <p id="comparisonMessage" class="text-center text-red-600 mt-4 hidden">Por favor, selecione entre 2 e 3 câmeras para comparar.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+// Script para comparação de câmeras
+document.addEventListener('DOMContentLoaded', () => {
+  const cameras = [
+    {
+      id: 'dome-ptz-unv',
+      name: 'Câmera Dome PTZ UNV',
+      image: 'imagens/OIP.jfif',
+      price: 15.98,
+      features: {
+        resolucao: '4MP',
+        visaoNoturna: 'IR 30m',
+        zoom: 'Motorizado',
+        audio: 'Não',
+        resistencia: 'IP66',
+        outros: 'Rotação 360°',
+      },
+    },
+    {
+      id: 'bullet-unv',
+      name: 'Câmera Bullet UNV',
+      image: 'imagens/IPC6312LFW-AX5C-VG1.webp',
+      price: 25.99,
+      features: {
+        resolucao: '2MP',
+        visaoNoturna: 'IR 50m',
+        zoom: 'Fixo',
+        audio: 'Sim (Bidirecional)',
+        resistencia: 'IP67',
+        outros: 'Detecção de movimento',
+      },
+    },
+    {
+      id: 'turret-unv',
+      name: 'Câmera Turret UNV',
+      image: 'imagens/unv-cctv-500x500 (1).webp',
+      price: 32.68,
+      features: {
+        resolucao: '4MP',
+        visaoNoturna: 'Colorida 24h',
+        zoom: 'Fixo',
+        audio: 'Não',
+        resistencia: 'IP66',
+        outros: 'Compacta',
+      },
+    },
+    
+  ]
+
+  const cameraSelectionDiv = document.getElementById('cameraSelection');
+  const comparisonTableContainer = document.getElementById('comparisonTableContainer');
+  const comparisonMessage = document.getElementById('comparisonMessage');
+  const selectedCameras = [];
+
+  function renderCameraCheckboxes() {
+    cameraSelectionDiv.innerHTML = '';
+    cameras.forEach(camera => {
+      const div = document.createElement('div');
+      div.className = 'flex items-center space-x-2 bg-white p-3 rounded-lg shadow';
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = `camera-${camera.id}`;
+      checkbox.value = camera.id;
+      checkbox.className = 'form-checkbox h-5 w-5 text-blue-600';
+      checkbox.checked = selectedCameras.includes(camera.id);
+
+      const label = document.createElement('label');
+      label.htmlFor = `camera-${camera.id}`;
+      label.className = 'text-gray-700 font-medium cursor-pointer';
+      label.innerText = camera.name;
+
+      checkbox.addEventListener('change', (event) => {
+        if (event.target.checked) {
+          if (selectedCameras.length < 3) {
+            selectedCameras.push(camera.id);
+          } else {
+            event.target.checked = false; // Prevent selecting more than 3
+            alert('Você pode selecionar no máximo 3 câmeras para comparação.');
+          }
+        } else {
+          const index = selectedCameras.indexOf(camera.id);
+          if (index > -1) {
+            selectedCameras.splice(index, 1);
+          }
+        }
+        renderComparisonTable();
+      });
+
+      div.appendChild(checkbox);
+      div.appendChild(label);
+      cameraSelectionDiv.appendChild(div);
+    });
+  }
+
+  function renderComparisonTable() {
+    comparisonTableContainer.innerHTML = '';
+    comparisonMessage.classList.add('hidden');
+
+    if (selectedCameras.length < 2 || selectedCameras.length > 3) {
+      comparisonMessage.classList.remove('hidden');
+      return;
+    }
+
+    const camerasToCompare = cameras.filter(cam => selectedCameras.includes(cam.id));
+
+    let tableHtml = '<table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm text-sm">';
+    tableHtml += '<thead><tr class="bg-blue-600 text-white"><th>Característica</th>';
+    camerasToCompare.forEach(cam => {
+      tableHtml += `<th class="p-3 border-l border-blue-500">${cam.name}</th>`;
+    });
+    tableHtml += '</tr></thead>';
+
+    tableHtml += '<tbody>';
+
+    // Imagens
+    tableHtml += '<tr><td class="font-semibold p-3 border-b border-gray-200 bg-gray-50">Imagem</td>';
+    camerasToCompare.forEach(cam => {
+      tableHtml += `<td class="p-3 border-b border-gray-200 border-l"><img src="${cam.image}" alt="${cam.name}" class="w-24 h-24 object-contain mx-auto"/></td>`;
+    });
+    tableHtml += '</tr>';
+
+    // Preço
+    tableHtml += '<tr><td class="font-semibold p-3 border-b border-gray-200 bg-gray-50">Preço Estimado</td>';
+    camerasToCompare.forEach(cam => {
+      tableHtml += `<td class="p-3 border-b border-gray-200 border-l text-blue-600 font-bold">R$ ${cam.price.toFixed(2).replace('.', ',')}</td>`;
+    });
+    tableHtml += '</tr>';
+
+    const featuresKeys = Object.keys(camerasToCompare[0].features);
+    featuresKeys.forEach(key => {
+      const featureName = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1'); // Formata nome da feature
+      tableHtml += `<tr><td class="font-semibold p-3 border-b border-gray-200 bg-gray-50">${featureName}</td>`;
+      camerasToCompare.forEach(cam => {
+        tableHtml += `<td class="p-3 border-b border-gray-200 border-l">${cam.features[key]}</td>`;
+      });
+      tableHtml += '</tr>';
+    });
+
+    tableHtml += '</tbody></table>';
+    comparisonTableContainer.innerHTML = tableHtml;
+  }
+
+  // Inicializar o comparador
+  renderCameraCheckboxes();
+});
+</script>
+
+<!-- Seção de Calculadora de Armazenamento -->
+<section id="storage-calculator" class="py-16 bg-gray-200">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Calcule seu Armazenamento</h2>
+    
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-md">
+      <p class="text-center text-lg mb-6 text-gray-700">Estime quantos dias de gravação você terá com diferentes configurações:</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div>
+          <label for="calcNumCameras" class="block text-gray-700 text-sm font-bold mb-2">Número de Câmeras:</label>
+          <input type="number" id="calcNumCameras" min="1" value="1" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+        <div>
+          <label for="calcResolution" class="block text-gray-700 text-sm font-bold mb-2">Resolução de Gravação:</label>
+          <select id="calcResolution" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <option value="720p">HD (720p)</option>
+            <option value="1080p" selected>Full HD (1080p)</option>
+            <option value="4k">4K (UHD)</option>
+          </select>
+        </div>
+        <div>
+          <label for="calcRecordingType" class="block text-gray-700 text-sm font-bold mb-2">Tipo de Gravação:</label>
+          <select id="calcRecordingType" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+            <option value="continuous">Contínua (24/7)</option>
+            <option value="motion">Detecção de Movimento (Estimativa)</option>
+          </select>
+        </div>
+        <div>
+          <label for="calcStorageSize" class="block text-gray-700 text-sm font-bold mb-2">Tamanho do Armazenamento (GB):</label>
+          <input type="number" id="calcStorageSize" min="1" value="1000" placeholder="Ex: 1000 para 1TB" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+        </div>
+      </div>
+      
+      <div class="text-center">
+        <p class="text-xl font-bold mb-2">Dias Estimados de Gravação:</p>
+        <p id="estimatedRecordingDays" class="text-5xl text-blue-600 font-extrabold">0 dias</p>
+        <p class="text-sm text-gray-500 mt-2">*Estimativa baseada em taxas de bits médias. O uso real pode variar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Área de Resultados dos Testes -->
+<div id="testResults" class="fixed bottom-20 right-4 w-96 bg-white p-4 rounded-lg shadow-lg max-h-96 overflow-y-auto border-2 border-blue-500">
+  <h3 class="text-lg font-bold mb-4 text-gray-800 border-b pb-2">Resultados dos Testes</h3>
+  <div id="testResultsContent" class="space-y-2">
+    <!-- Os resultados dos testes serão inseridos aqui -->
+  </div>
+</div>
+
+<!-- Botão de Testes -->
+<div class="fixed bottom-4 right-4">
+  <button onclick="executarTodosTestes()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-lg">
+    Executar Testes
+  </button>
+</div>
+
+<script>
+// Função para executar todos os testes
+function executarTodosTestes() {
+  // Limpar resultados anteriores
+  const resultsContainer = document.getElementById('testResultsContent');
+  resultsContainer.innerHTML = '';
+  
+  // Executar os testes
+  runUnitTests();
+  runComponentTests();
+}
+</script>
+
+<script src="unitario.test.js"></script>
+<script src="component.test.js"></script>
+
+<!-- Seção de Contato -->
+<section id="contato" class="py-16 bg-gray-50">
+</section>
+</body>
+</html>
