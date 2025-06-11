@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Script para Calculadora de Armazenamento
+  // Calculadora de Armazenamento
   const calcNumCamerasInput = document.getElementById('calcNumCameras');
   const calcResolutionSelect = document.getElementById('calcResolution');
   const calcRecordingTypeSelect = document.getElementById('calcRecordingType');
@@ -94,7 +94,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const estimatedRecordingDaysDisplay = document.getElementById('estimatedRecordingDays');
 
   // Taxas de bits estimadas em Mbps (megabits por segundo)
-  // Estas são estimativas e podem variar dependendo da compressão (H.264, H.265 etc.) e da qualidade da câmera.
   const estimatedBitratesMbps = {
     '720p': 2,
     '1080p': 4,
@@ -125,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const storageSizeMegabits = storageSizeGB * 8000;
 
     // Cálculo da taxa de bits total por dia (para gravação contínua)
-    // (bitrate Mbps * 60 segundos/min * 60 min/hora * 24 horas/dia)
     const totalBitratePerDayMbps = bitrateMbps * 60 * 60 * 24;
 
     let adjustedTotalBitratePerDayMbps = totalBitratePerDayMbps * numCameras;
@@ -148,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Calcular valor inicial ao carregar a página
   calculateRecordingDays();
 
-  // Script para pesquisa de CEP (movido para cá)
+  // Script para pesquisa de CEP
   const cepInput = document.getElementById('cep');
   const consultaCepButton = document.getElementById('consultaCep');
   const resultadoCepDiv = document.getElementById('resultadoCep');
@@ -224,174 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </section>
 
-<!-- Seção de Comparação de Câmeras -->
-<section id="camera-comparison" class="py-16 bg-white">
-  <div class="container mx-auto px-4">
-    <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Compare Nossas Câmeras</h2>
-    
-    <div class="max-w-4xl mx-auto bg-gray-100 p-8 rounded-lg shadow-md">
-      <p class="text-center text-lg mb-6 text-gray-700">Selecione até 3 câmeras para comparar suas características:</p>
-      
-      <div class="flex flex-wrap justify-center gap-4 mb-8" id="cameraSelection">
-        <!-- Checkboxes para seleção de câmeras serão inseridos aqui via JS -->
-      </div>
-
-      <div id="comparisonTableContainer" class="overflow-x-auto">
-        <!-- Tabela de comparação será inserida aqui via JS -->
-      </div>
-      
-      <p id="comparisonMessage" class="text-center text-red-600 mt-4 hidden">Por favor, selecione entre 2 e 3 câmeras para comparar.</p>
-    </div>
-  </div>
-</section>
-
-<script>
-// Script para comparação de câmeras
-document.addEventListener('DOMContentLoaded', () => {
-  const cameras = [
-    {
-      id: 'dome-ptz-unv',
-      name: 'Câmera Dome PTZ UNV',
-      image: 'imagens/OIP.jfif',
-      price: 15.98,
-      features: {
-        resolucao: '4MP',
-        visaoNoturna: 'IR 30m',
-        zoom: 'Motorizado',
-        audio: 'Não',
-        resistencia: 'IP66',
-        outros: 'Rotação 360°',
-      },
-    },
-    {
-      id: 'bullet-unv',
-      name: 'Câmera Bullet UNV',
-      image: 'imagens/IPC6312LFW-AX5C-VG1.webp',
-      price: 25.99,
-      features: {
-        resolucao: '2MP',
-        visaoNoturna: 'IR 50m',
-        zoom: 'Fixo',
-        audio: 'Sim (Bidirecional)',
-        resistencia: 'IP67',
-        outros: 'Detecção de movimento',
-      },
-    },
-    {
-      id: 'turret-unv',
-      name: 'Câmera Turret UNV',
-      image: 'imagens/unv-cctv-500x500 (1).webp',
-      price: 32.68,
-      features: {
-        resolucao: '4MP',
-        visaoNoturna: 'Colorida 24h',
-        zoom: 'Fixo',
-        audio: 'Não',
-        resistencia: 'IP66',
-        outros: 'Compacta',
-      },
-    },
-    
-  ]
-
-  const cameraSelectionDiv = document.getElementById('cameraSelection');
-  const comparisonTableContainer = document.getElementById('comparisonTableContainer');
-  const comparisonMessage = document.getElementById('comparisonMessage');
-  const selectedCameras = [];
-
-  function renderCameraCheckboxes() {
-    cameraSelectionDiv.innerHTML = '';
-    cameras.forEach(camera => {
-      const div = document.createElement('div');
-      div.className = 'flex items-center space-x-2 bg-white p-3 rounded-lg shadow';
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
-      checkbox.id = `camera-${camera.id}`;
-      checkbox.value = camera.id;
-      checkbox.className = 'form-checkbox h-5 w-5 text-blue-600';
-      checkbox.checked = selectedCameras.includes(camera.id);
-
-      const label = document.createElement('label');
-      label.htmlFor = `camera-${camera.id}`;
-      label.className = 'text-gray-700 font-medium cursor-pointer';
-      label.innerText = camera.name;
-
-      checkbox.addEventListener('change', (event) => {
-        if (event.target.checked) {
-          if (selectedCameras.length < 3) {
-            selectedCameras.push(camera.id);
-          } else {
-            event.target.checked = false; // Prevent selecting more than 3
-            alert('Você pode selecionar no máximo 3 câmeras para comparação.');
-          }
-        } else {
-          const index = selectedCameras.indexOf(camera.id);
-          if (index > -1) {
-            selectedCameras.splice(index, 1);
-          }
-        }
-        renderComparisonTable();
-      });
-
-      div.appendChild(checkbox);
-      div.appendChild(label);
-      cameraSelectionDiv.appendChild(div);
-    });
-  }
-
-  function renderComparisonTable() {
-    comparisonTableContainer.innerHTML = '';
-    comparisonMessage.classList.add('hidden');
-
-    if (selectedCameras.length < 2 || selectedCameras.length > 3) {
-      comparisonMessage.classList.remove('hidden');
-      return;
-    }
-
-    const camerasToCompare = cameras.filter(cam => selectedCameras.includes(cam.id));
-
-    let tableHtml = '<table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm text-sm">';
-    tableHtml += '<thead><tr class="bg-blue-600 text-white"><th>Característica</th>';
-    camerasToCompare.forEach(cam => {
-      tableHtml += `<th class="p-3 border-l border-blue-500">${cam.name}</th>`;
-    });
-    tableHtml += '</tr></thead>';
-
-    tableHtml += '<tbody>';
-
-    // Imagens
-    tableHtml += '<tr><td class="font-semibold p-3 border-b border-gray-200 bg-gray-50">Imagem</td>';
-    camerasToCompare.forEach(cam => {
-      tableHtml += `<td class="p-3 border-b border-gray-200 border-l"><img src="${cam.image}" alt="${cam.name}" class="w-24 h-24 object-contain mx-auto"/></td>`;
-    });
-    tableHtml += '</tr>';
-
-    // Preço
-    tableHtml += '<tr><td class="font-semibold p-3 border-b border-gray-200 bg-gray-50">Preço Estimado</td>';
-    camerasToCompare.forEach(cam => {
-      tableHtml += `<td class="p-3 border-b border-gray-200 border-l text-blue-600 font-bold">R$ ${cam.price.toFixed(2).replace('.', ',')}</td>`;
-    });
-    tableHtml += '</tr>';
-
-    const featuresKeys = Object.keys(camerasToCompare[0].features);
-    featuresKeys.forEach(key => {
-      const featureName = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1'); // Formata nome da feature
-      tableHtml += `<tr><td class="font-semibold p-3 border-b border-gray-200 bg-gray-50">${featureName}</td>`;
-      camerasToCompare.forEach(cam => {
-        tableHtml += `<td class="p-3 border-b border-gray-200 border-l">${cam.features[key]}</td>`;
-      });
-      tableHtml += '</tr>';
-    });
-
-    tableHtml += '</tbody></table>';
-    comparisonTableContainer.innerHTML = tableHtml;
-  }
-
-  // Inicializar o comparador
-  renderCameraCheckboxes();
-});
-</script>
-
 <!-- Seção de Calculadora de Armazenamento -->
 <section id="storage-calculator" class="py-16 bg-gray-200">
   <div class="container mx-auto px-4">
@@ -446,8 +276,10 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- Botão de Testes -->
 <div class="fixed bottom-4 right-4">
   <button onclick="executarTodosTestes()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-lg">
-    Executar Testes
+    Testes Unitários
   </button>
+  <button onclick="executarTodosTestes()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-lg ml-2">
+    Testes de Componentes
 </div>
 
 <script>
